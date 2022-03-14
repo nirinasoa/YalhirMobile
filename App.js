@@ -9,7 +9,7 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-
+import { View, ScrollView} from 'react-native';
 
 //Screens
 import { OnBoarding } from './app/screens';
@@ -17,12 +17,17 @@ import Login from './app/screens/Login';
 import Home from './app/screens/Home';
 import FicheItem from './app/screens/FicheItem';
 import Song from './app/screens/Song';
+import Menu from './app/screens/Menu';
 
-const Stack = createStackNavigator();
+
+
+ const Stack = createStackNavigator();
+
 const App = () =>{
   return (
     <NavigationContainer>
       <Stack.Navigator>
+       <Stack.Screen  name="DrawerHome" component={Menu}options={{ headerShown: false }}/>
         <Stack.Screen name="OnBoarding" component={OnBoarding} options={{headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{headerShown: false }} />
         <Stack.Screen name="Home" component={Home} />
@@ -30,6 +35,7 @@ const App = () =>{
         <Stack.Screen name="Song" component={Song} />
       </Stack.Navigator>
     </NavigationContainer>
+
   )
 }
 
