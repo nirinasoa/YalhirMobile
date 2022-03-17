@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import {
     SafeAreaView,
     View,
@@ -10,13 +10,14 @@ import {
     ImageBackground,
     Dimensions,
     ScrollView,
-    Button,
-    Alert
+
     } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { ListItem, Avatar } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { images, theme } from "../constants/";
+import {openDatabase} from 'react-native-sqlite-storage';
+
 //theme
 const {COLORS, FONTS, SIZES} = theme;
 const list = [
@@ -33,13 +34,73 @@ const list = [
       subtitle: 'Batim'
     },
   ];
-
+  const db = openDatabase({
+    name:'yalhir',
+  })
 const Home = ({ navigation }) =>{
     const [search, setSearch] = useState('');
+    const [artist, setArtist] = useState([]);
     function ficheItem(id){
-        console.log(id);
         navigation.navigate('FicheItem', {itemId: id});
     }
+    const getArtist =() =>{
+        db.transaction(txn => {
+          txn.executeSql(
+            `
+            SELECT * from Artist
+            `,[],
+            (sqlTxn, res)=>{
+              console.log('Artist retrieved successfully');
+              let len = res.rows.length;
+              if(len>0){
+                let results = [];
+                for (let i = 0; i < len; i++) {
+                  console.log(res.rows.item(i))
+                 let item = res.rows.item(i);
+                 const photolink = require(`../assets/images/artist/noname.jpg`);
+                
+                    if(item.username ==  "Poopy")
+                        photolink = require(`../assets/images/artist/poopy.jpg`)
+                    if(item.username ==  "Ndriana")
+                        photolink = require(`../assets/images/artist/ndriana.jpg`)
+                    if(item.username ==  "Ryvkah")
+                            photolink = require(`../assets/images/artist/ryvkah.jpg`)
+                    if(item.username ==  "Petoela")
+                            photolink = require(`../assets/images/artist/petoela.jpg`)
+                    if(item.username ==  "Kefa")
+                            photolink = require(`../assets/images/artist/kefa.jpg`)
+                    if(item.username ==  "Yaldot")
+                            photolink = require(`../assets/images/artist/yaldot.jpg`) 
+                    if(item.username ==  "Toliara")
+                        photolink = require(`../assets/images/artist/toliara.jpg`)    
+                    if(item.username ==  "Iaakov")
+                        photolink = require(`../assets/images/artist/iaakov.jpg`)                         
+                   
+                  
+                
+                 results.push({
+                    idArtist:item.idArtist,
+                    username:item.username,
+                    belongsTo:item.belongsTo,
+                    photo:photolink
+                 })
+                  
+                }
+               
+                setArtist(results)
+              }
+            },
+            error =>{
+              console.log('error on dropping table' + error.message)
+            }
+          )
+        })
+        }
+        useEffect(() => {
+            getArtist();
+            
+            
+          }, [])
     return (
         <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
         showsHorizontalScrollIndicator={false}>
@@ -69,20 +130,20 @@ const Home = ({ navigation }) =>{
              <View style={styles.bottomView}>
                 <View style={{paddingLeft:20, paddingRight:20}}>
                     {
-                        list.map((l, i) => (
+                        artist.map((l, i) => (
                         <TouchableOpacity
-                         key={l.id}
-                         onPress={()=>ficheItem(l.id)}
+                         key={l.idArtist}
+                         onPress={()=>ficheItem(l.idArtist)}
                          >
                             <ListItem  bottomDivider>
                                 <Avatar 
                                 rounded 
                                 size={50}
-                                source={l.avatar_url} 
+                                source={l.photo}
                                 />
                                 <ListItem.Content>
-                                <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h5 }}>{l.name}</ListItem.Title>
-                                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                                <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h5 }}>{l.username}</ListItem.Title>
+                                <ListItem.Subtitle>{l.belongsTo}</ListItem.Subtitle>
                                 </ListItem.Content>
                                 <Text>2012</Text>
                             </ListItem>

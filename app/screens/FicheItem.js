@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import {
     SafeAreaView,
     View,
@@ -17,6 +17,7 @@ import { TextInput } from 'react-native-paper';
 import { ListItem, Avatar } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { images, theme } from "../constants/";
+import {openDatabase} from 'react-native-sqlite-storage';
 //theme
 const {COLORS, FONTS, SIZES} = theme;
 const list = [
@@ -33,13 +34,86 @@ const list = [
       subtitle: '2018'
     },
   ];
-
+const db = openDatabase({
+    name:'yalhir',
+})
 const FicheItem = ({ route, navigation }) =>{
     const [search, setSearch] = useState('');
+    const [songs, setSong] = useState([]);
+    const [artist, setArtist] = useState([]);
     const { itemId } = route.params;
     function displaySong(idSong){
         navigation.navigate('Song', {itemId: itemId, idSong:idSong});
     }
+    const getArtistName =(id) =>{
+        db.transaction(txn => {
+          txn.executeSql(
+            `
+            SELECT * from Artist where idArtist=${id}
+            `,[],
+            (sqlTxn, res)=>{
+
+              let len = res.rows.length;
+              if(len>0){
+                let results = [];
+                for (let i = 0; i < len; i++) {
+                 let item = res.rows.item(i);
+                 results.push({
+                    username:item.username,
+                    belongsTo:item.belongsTo,
+                    
+                 })
+                  
+                }
+               
+                setArtist(results)
+              }
+            },
+            error =>{
+              console.log('error on dropping table' + error.message)
+            }
+          )
+        })
+        }
+    const getSongs =(id) =>{
+        db.transaction(txn => {
+          txn.executeSql(
+            `
+            SELECT * from Song where idArtist=${id} order by id desc 
+            `,[],
+            (sqlTxn, res)=>{
+
+              let len = res.rows.length;
+              if(len>0){
+                let results = [];
+                for (let i = 0; i < len; i++) {
+                 let item = res.rows.item(i);
+            
+                 results.push({
+                    id:item.id,
+                    title:item.title,
+                    isFavorite:item.isFavorite,
+                    yearProduction:item.yearProduction,
+                    paragraph1:item.paragraph1,
+                 })
+                  
+                }
+               
+                setSong(results)
+              }
+            },
+            error =>{
+              console.log('error on dropping table' + error.message)
+            }
+          )
+        })
+        }
+    useEffect(() => {
+
+        getSongs(itemId)
+        getArtistName(itemId)
+        
+      }, [])
     return (
         <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
         showsHorizontalScrollIndicator={false}>
@@ -68,23 +142,24 @@ const FicheItem = ({ route, navigation }) =>{
              </ImageBackground>
              <View style={styles.bottomView}>
                 <View style={{paddingLeft:20, paddingRight:20}}>
-                <Text style={{ ...FONTS.h2,fontSize:27,color: COLORS.gray,padding:10}}>Ireo hiran' i {itemId} </Text>
+                <Text style={{ ...FONTS.h2,fontSize:20,color: COLORS.gray,padding:10}}>Ireo hiran' i {artist[0].username} </Text>
                     {
-                        list.map((l, i) => (
+                        songs.map((l, i) => (
                         <TouchableOpacity
                          key={l.id}
                          onPress={()=>displaySong(l.id)}
+                         style={styles.button}
                          >
-                            <ListItem  bottomDivider> 
+                            <ListItem  bottomDivider > 
                                 <Ionicons
                                 testID="nextButton"
                                 name="md-musical-notes"
                                 color="black"
                                 size={24}
                                 />
-                                <ListItem.Content>
-                                <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h3 }}>{l.name}</ListItem.Title>
-                                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                                <ListItem.Content >
+                                <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h3 }}>{l.title}</ListItem.Title>
+                                <ListItem.Subtitle numberOfLines={1} style={{ textTransform: 'lowercase'}}>{l.paragraph1}</ListItem.Subtitle>
                                 </ListItem.Content>
                                 <Text>
                                 <Ionicons
@@ -139,7 +214,11 @@ const styles = StyleSheet.create({
         padding:50,
         flex: 1,
         flexDirection: 'row',
-    }
+    },
+    button: {
+        borderBottomColor: "red",
+ 
+      },
    
 })
 export default FicheItem;
