@@ -225,13 +225,17 @@ const Home = ({ navigation }) =>{
                </TouchableHighlight>
                </View> 
                </View>
-             <FlatList
-                    showsVerticalScrollIndicator={false}
-                    numColumns={2}
-                    data={artist}
-                    renderItem={(item)=><Card artist={item}/>}
-                  />
-             
+               <Animated.View
+               animation="fadeInUp"
+               duration={1000}
+               >
+                  <FlatList
+                          showsVerticalScrollIndicator={false}
+                          numColumns={2}
+                          data={artist}
+                          renderItem={(item)=><Card artist={item}/>}
+                        />
+             </Animated.View>
         </SafeAreaView>
     )
 }
@@ -246,7 +250,7 @@ const styles = StyleSheet.create({
         color:COLORS.black,
         width:275,
         paddingLeft:10,
-        height:50
+        height:50,
       
  
     },
@@ -342,6 +346,7 @@ const styles = StyleSheet.create({
       backgroundColor:'#fccf03',
       paddingHorizontal:5,
       paddingVertical:5,
+      elevation:5
       
     },
     menuBtn:{

@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     },
     dotsRootContainer:{
         position:'absolute',
-        bottom: SIZES.height > 700 ? '30%' : '20%'
+        bottom: SIZES.height > 700 ? '5%' : '5%'
     }
     
 })

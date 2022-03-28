@@ -78,16 +78,17 @@ const Login = ({ navigation }) =>{
               `,[],
               (sqlTxn, res)=>{
                   let len = res.rows.length;
+                  
                   if(len>0){
                     let results = [];
                     for (let i = 0; i < len; i++) {
                      let item = res.rows.item(i);
+                     console.log(item)
                      results.push({
                        id:item.id,
                        datefinApp:item.datefinApp,
                      })            
                     }
-                    console.log(results)
                     setInfoapp(results)
                   }
                                        
@@ -104,20 +105,28 @@ const Login = ({ navigation }) =>{
               `,[],
               (sqlTxn, res)=>{
                   let len = res.rows.length;
-                  var today = new Date(),
-                  current_date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                  var today = new Date();
+                  var dd = String(today.getDate()).padStart(2, '0');
+                  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                  var yyyy = today.getFullYear();
+
+                  current_date = yyyy + '-' + mm + '-' + dd
                   last_date_app = info[0].datefinApp;
                   isAdmin = res.rows.item(0).isAdmin;
-                  console.log(isAdmin);
-                  console.log(info[0].datefinApp);
-                  if(len>0 && current_date>=last_date_app && isAdmin==0){
+                  console.log('Is Admin='+isAdmin);
+                  console.log('Date app = '+last_date_app);
+                  console.log('Current Date  = '+current_date);
+
+                  var date2 = new Date('2022-03-28');
+                  console.log('date2  = '+date2);
+                  if(len>0 && current_date<=last_date_app && isAdmin==0){
                      AsyncStorage.setItem('@isAdmin',isAdmin)
-                     console.log(current_date);
+                     console.log('user tsotra');
                      navigation.navigate('DrawerHome');
                   }
-                  if(len>0 && isAdmin==1){
+                  else if(len>0 && isAdmin==1){
                     AsyncStorage.setItem('@isAdmin',isAdmin)
-                    console.log('is Admin');
+                    console.log('is Admin logged in');
                     navigation.navigate('DrawerHome');
                   }
                   else{
@@ -199,7 +208,14 @@ const styles = StyleSheet.create({
     input: {
         width:300,
         left:35,
-        backgroundColor:'transparent'
+        backgroundColor:'transparent',
+        borderStartWidth : 2,
+        borderEndWidth : 3,
+        borderTopWidth : 1,
+        boderLeftWidth: 2,
+        borderRightWidth: 3,
+        borderBottomWidth : 2,
+        borderColor:'black'
         
     },
     bottomView:{
@@ -208,6 +224,7 @@ const styles = StyleSheet.create({
         bottom:50,
         borderTopStartRadius:60,
         borderTopEndRadius:60,
+        
     },
     button:{
       padding:10,
