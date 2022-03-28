@@ -105,21 +105,31 @@ const Login = ({ navigation }) =>{
               (sqlTxn, res)=>{
                   let len = res.rows.length;
                   var today = new Date(),
-                  date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                  current_date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                  last_date_app = info[0].datefinApp;
+                  isAdmin = res.rows.item(0).isAdmin;
+                  console.log(isAdmin);
                   console.log(info[0].datefinApp);
-                  if(len>0){
-                     AsyncStorage.setItem('@isAdmin',res.rows.item(0).isAdmin)
-                     console.log(date);
+                  if(len>0 && current_date>=last_date_app && isAdmin==0){
+                     AsyncStorage.setItem('@isAdmin',isAdmin)
+                     console.log(current_date);
                      navigation.navigate('DrawerHome');
-                  }else{
+                  }
+                  if(len>0 && isAdmin==1){
+                    AsyncStorage.setItem('@isAdmin',isAdmin)
+                    console.log('is Admin');
+                    navigation.navigate('DrawerHome');
+                  }
+                  else{
                     Alert.alert(
-                        "Diso ny code izay nosoratanao"
+                      "🎼Yalhir","Diso ny code izay nosoratanao (҂◡_◡). Manotania ny tomponandraikitra raha misy olana.Todah!"
                       );
+                      navigation.navigate('Login');
                   }
               },
               error =>{
                 Alert.alert(
-                    "Diso ny code izay nosoratanao"
+                  "🎼Yalhir","Diso ny code izay nosoratanao"
                   );
               }
             )

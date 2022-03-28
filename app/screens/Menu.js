@@ -64,10 +64,11 @@ import Info from './Info';
     return (
       <DrawerContentScrollView {...props}>
           <Image source={require("../assets/images/piano2.jpg")}
-            style = {{ width: 200, height:200, alignItems:'center', justifyContent:'center', marginLeft:10}}
+            style = {{ width:260,height:170,marginLeft:5}}
+            resizeMode='cover'
         />
+         <DrawerItem label="YALHIR"  style={{color:'#f5b207'}}/>
         <DrawerItemList {...props} />
-        <DrawerItem label="Logout" onPress={() => logout()} />
       </DrawerContentScrollView>
     );
   }

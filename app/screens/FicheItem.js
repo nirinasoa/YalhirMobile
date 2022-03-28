@@ -202,7 +202,7 @@ const FicheItem = ({ route, navigation }) =>{
         <ScrollView style ={{flex:1}} 
         showsHorizontalScrollIndicator={false}>
           
-          <LinearGradient colors={['black', '#262525', '#f7bd36','white']}>
+          <LinearGradient colors={['black', '#262525', '#f7bd36']}>
             <View style={styles.menuListContainer}>
                  {isLoggedIn == 1 ?
                   <View >

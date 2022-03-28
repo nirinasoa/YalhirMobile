@@ -321,16 +321,19 @@ const createTableUser =() =>{
                                 console.log('adding Song...')
                                 addSong(arraySong)
                               }   
-                              Alert.alert("🎼Yalhir","M à j Ok")                       
+                                                  
                           },
                           error =>{ console.log(error.message)}
                         )
                       })
                        }
                       )
-                     
+                      Alert.alert("🎼Yalhir","M à j Ok")   
                      
             })
+            .catch(error => {
+              Alert.alert("🎼Yalhir","M à j Failed due to connection internet")  
+           })
     };
     const getListArtist = () => {
       Axios.get('https://yalhir-nodejs-mongodb.herokuapp.com/artists')
@@ -355,7 +358,7 @@ const createTableUser =() =>{
                                 console.log('adding Artist...')
                                 addArtist(arrayArtist)
                               }     
-                              Alert.alert("🎼Yalhir","M à j Ok")                     
+                                              
                           },
                           error =>{ console.log(error.message)}
                         )
@@ -363,7 +366,11 @@ const createTableUser =() =>{
                       
                     }
                     ) 
+                    Alert.alert("🎼Yalhir","M à j Ok")   
           })
+          .catch(error => {
+            Alert.alert("🎼Yalhir","M à j Failed due to connection internet")  
+         })
     };
     const createTableInfoapp =() =>{
       db.transaction(txn => {
@@ -469,15 +476,18 @@ const createTableUser =() =>{
                               if(len == 0){
                                 console.log('adding User...')
                                 addUser(arrayArtist)
-                              } 
-                              Alert.alert("🎼Yalhir","M à j Ok")                      
+                              }                     
                           },
                           error =>{ console.log(error.message)}
                         )
                       })
                     }
                     ) 
+                    Alert.alert("🎼Yalhir","M à j Ok")  
           })
+          .catch(error => {
+            Alert.alert("🎼Yalhir","M à j Failed due to connection internet")  
+         })
     };
     return (
        <SafeAreaView style={{flex:1,backgroundColor:'#ffffff'}}>
@@ -491,7 +501,7 @@ const createTableUser =() =>{
            <TextInput
                     label="Date Fin"
                     style={styles.input}
-                    placeholder="Date"
+                    placeholder="YYYY-mm-dd"
                     defaultValue={dateFin}
                     onChangeText={dateFin => setdateFin(dateFin)}
                     />
@@ -685,8 +695,6 @@ const styles = StyleSheet.create({
   input: {
       width:300,
       left:35,
-      height:32,
-      padding:10
       
   },
   ViewDate:{

@@ -74,8 +74,7 @@ const App = ({navigation}) =>{
         `
         CREATE TABLE IF NOT EXISTS Infoapp (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          datefinApp DATETIME,
-          info varchar(100)
+          datefinApp DATETIME
         );
         `,[],
         (sqlTxn, res)=>{
@@ -92,10 +91,9 @@ const App = ({navigation}) =>{
       txn.executeSql(
         `
           INSERT INTO Infoapp (
-            datefinApp,
-            info
+            datefinApp
             )
-            VALUES (?,?)
+            VALUES (?)
         `,array,
         (sqlTxn, res)=>{
           console.log(`${array} Infoapp added successfully`)
@@ -109,7 +107,7 @@ const App = ({navigation}) =>{
     db.transaction(txn => {
         txn.executeSql(
          `
-           Update Infoapp set star='${datefinApp}' where id=1
+           Update Infoapp set datefinApp='${datefinApp}' where id=1
             `,[],
             (sqlTxn, res)=>{
                 Alert.alert("M à J, ok")
@@ -259,6 +257,50 @@ const App = ({navigation}) =>{
           )
         })
   }
+  const addFirstUser = () =>{
+    const arrayUser = [
+     'yalhir',
+      '1351',
+      '0'
+    ]
+    //  console.log(arrayArtist)
+    db.transaction(txn => {
+      txn.executeSql(
+        `
+       SELECT  * FROM User where password='1351' and username='yalhir'
+        `,[],
+        (sqlTxn, res)=>{
+            let len = res.rows.length;
+            if(len == 0){
+              console.log('adding User...')
+              addUser(arrayUser)
+            }                       
+        },
+        error =>{ console.log(error.message)}
+      )
+    })
+    const arrayUser2 = [
+      'yalhir',
+       '115626',
+       '1'
+     ]
+     //  console.log(arrayArtist)
+     db.transaction(txn => {
+       txn.executeSql(
+         `
+        SELECT  * FROM User where password='115626' and username='yalhir'
+         `,[],
+         (sqlTxn, res)=>{
+             let len = res.rows.length;
+             if(len == 0){
+               console.log('adding User...')
+               addUser(arrayUser2)
+             }                       
+         },
+         error =>{ console.log(error.message)}
+       )
+     })
+  }
   const getUser =() =>{
     db.transaction(txn => {
       txn.executeSql(
@@ -317,8 +359,11 @@ const App = ({navigation}) =>{
         (sqlTxn, res)=>{
        
           let len = res.rows.length;
+          const array = [
+           '2022-05-05'
+           ]
           if(len <=0){
-                addInfoapp('2022-05-05')
+                addInfoapp(array)
                 console.log('created')             
           }
         },
@@ -335,15 +380,14 @@ const App = ({navigation}) =>{
     //  addSong();
     //  getListSong();
     //  getSong();
-
-      // dropTables();
-      //  dropTables('User');
        createTableUser();
        createTableInfoapp();
-      /* createTableArtist();
-       createTableSong();*/
-       getListUserAPI();
-       getUser();
+       createTableArtist();
+       createTableSong();
+       addFirstUser();
+       createTableRateUs();
+       /*getListUserAPI();
+       getUser();*/
        getInfoapp();
        
       /* getListArtist();
@@ -351,9 +395,9 @@ const App = ({navigation}) =>{
          getListSong();
          getSong();*/
         
-         /*dropTables('RateUs');
+        // dropTables('RateUs');
           createTableRateUs();
-          getRateUs()*/
+          getRateUs()
   }, [])
   const addArtist =(array) =>{
     db.transaction(txn => {
