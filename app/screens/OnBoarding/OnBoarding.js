@@ -17,18 +17,18 @@ const {COLORS, FONTS, SIZES} = theme;
 //Dummy Data
 const OnBoardings = [
     {
-        title: "Let's understand a song",
-        description:"Are you ready? cause I am1 ",
+        title: "Ny fiderako Anao, ahitako fotoana foana",
+        description:"Na dia maro aza ny zavatra atao",
         img:onboarding1
     },
     {
-        title: "Navigation",
-        description:"Are you ready? cause I am2 ",
+        title: "Te hihira ny hatsaranao aho Adonai",
+        description:"Mamelombelona ny fanahy ny zavatra rehetra izay atolotrao ahy",
         img:onboarding2
     },
     {
-        title: "title3",
-        description:"Are you ready? cause I am3 ",
+        title: "IESHUA o hatreo aho",
+        description:"Tsy mety raha tsy manatrika Ianao fa ho Anao no anaovako izao",
         img:onboarding3
     },
 ];
@@ -41,7 +41,7 @@ const OnBoarding = ({ navigation }) =>{
     React.useEffect(()=>{
         // To check if user had finished scrolling the onBoarding pages
         scrollX.addListener(({value})=>{
-            if (Math.floor(value / SIZES.width) === OnBoardings.length - 1){
+            if (Math.floor(value / SIZES.width) === OnBoardings.length - 2){
                 setCompleted(true)
             }
         })
@@ -75,23 +75,26 @@ const OnBoarding = ({ navigation }) =>{
                 >
                     <Text 
                         style={{
-                        ...FONTS.h1,
-                         color:COLORS.white,
-                          textAlign:'center'
+                        ...FONTS.h2,
+                         color:'#4a4c4d',
+                          justifyContent:'center',
+                          alignItems:'center'
                         }}
                     >
                             {item.title}
                     </Text>
                     <Text
                         style={{
-                        ...FONTS.body3,
-                         color:COLORS.white,
+                          fontSize:18,
                           marginTop:SIZES.base,
-                          color:COLORS.white
+                          color:'#4a4c4d',
+                          justifyContent:'center',
+                          alignItems:'center'
                         }}
                     >{item.description}</Text>
                 </View>
                 {/* Button */}
+                {completed ?
                 <TouchableOpacity
                 style={{
                     position:'absolute',
@@ -102,17 +105,40 @@ const OnBoarding = ({ navigation }) =>{
                     justifyContent:'center',
                     borderTopLeftRadius:30,
                     paddingLeft:20,
-    
+                    elevation:10,
                     borderBottomLeftRadius:30,
-                    backgroundColor:'orange',
+                    backgroundColor:'#914a17',
     
                 }}
                 onPress={()=>navigation.navigate('Login')}
                 >
                     {
                     console.log(completed)}
-                    <Text style={{...FONTS.h2,color: COLORS.white}}>{completed ? "Let's Go" : "Skip"}</Text>
-                </TouchableOpacity>
+                    <Text style={{...FONTS.h2,color: COLORS.white}}>Let's Go</Text>
+                </TouchableOpacity>:
+                 <TouchableOpacity
+                 style={{
+                     position:'absolute',
+                     bottom: 0,
+                     right:0,
+                     width:150,
+                     height:60,
+                     justifyContent:'center',
+                     borderTopLeftRadius:30,
+                     paddingLeft:20,
+                     elevation:10,
+                     borderBottomLeftRadius:30,
+                     backgroundColor:'#914a17',
+     
+                 }}
+                 onPress={()=>navigation.navigate('Login')}
+                 >
+                     {
+                     console.log(completed)}
+                     <Text style={{...FONTS.h2,color: COLORS.white}}>Skip</Text>
+                 </TouchableOpacity>
+                
+                }
             </View>
             )
         })
@@ -184,7 +210,7 @@ const styles = StyleSheet.create({
     },
     dot:{
         borderRadius: SIZES.radius,
-        backgroundColor: COLORS.blue,
+        backgroundColor: COLORS.white,
         marginHorizontal: SIZES.radius / 2
     },
     dotContainer:{

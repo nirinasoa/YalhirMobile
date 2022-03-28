@@ -111,34 +111,15 @@ const [_id, set_id] = useState('');
         getSongs(idSong)
         
       }, [])
-    let list = [];
-    if(itemId == 1){
-        list = [
-            {
-              id:'1',
-              title: 'Hanao ny sitrakao',
-              image: require("../assets/images/poopy.jpg"),
-              lyrix: ' Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. {"\n"}{"\n"}Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci. Aenean nec lorem. In porttitor. Donec laoreet nonummy augue. Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.'
-            },
-           
-          ];
-    }else{
-        list = [{
-            id:'2',
-            title: 'Fitondranao ahy',
-            image:  require("../assets/images/yael.jpg"),
-            lyrix: ' Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. {"\n"}{"\n"}Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci. Aenean nec lorem. In porttitor. Donec laoreet nonummy augue. Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.'
-          }];
-    }
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} style ={{flex:1, backgroundColor:'black',height: Dimensions.get('window').height}} 
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} style ={{flex:1, backgroundColor:'#302c30',height: Dimensions.get('window').height}} 
         showsHorizontalScrollIndicator={true}
         automaticallyAdjustContentInsets={false}
         vertical={true}
         >
             <ImageBackground
              source={photolink}
-             style={{height:Dimensions.get('window').height/5, resizeMode: 'fill',}}
+             style={{resizeMode: 'cover',}}
              
              >
                  <View style={styles.containerTitle}>
@@ -146,34 +127,33 @@ const [_id, set_id] = useState('');
                     <Text style={{color: COLORS.white}}> ────────<Ionicons style={styles.icon} testID="nextButton" name="heart" color="black" size={20}
                     />  ─────────</Text>
                 </View>
-                  </ImageBackground>
+                 
                 
                 <View style={styles.containerSong} >
                     <View style={styles.containerLyrix} opacity={0.8}>
                     {arrayOrder.map((value, index) => (
-                        <Text hey={index} style={styles.lyrix} >
+                        <Text key={index} style={styles.lyrix} >
                            {value.includes("[Ref]") ? <Text style={{color:'#ffe282'}}>{value}</Text> : value}
-                         
                          </Text>
                     ))}
                     <Text style={{color: COLORS.white}}> ─────────────────</Text>
                     </View>
                 </View>
             
-
-             
+                </ImageBackground>
+                <Text style={{padding:40, fontSize:11,color:'white'}}>© Copyright to Yaldot-Miezaka hanatsara hatrany-Elohim anie hitahy antsika rehetra </Text>
         </ScrollView>
     )
 }
 const styles = StyleSheet.create({
     containerTitle: {
-        color:COLORS.white,
+        color:'brown',
         left:'20%',
-      padding:10
+      top:0
     },
     containerSong: {
         color:COLORS.white,
-        top:-50
+     
     },
     container: {
         flex:1,

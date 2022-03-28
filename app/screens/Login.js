@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import {
     SafeAreaView,
     View,
@@ -15,37 +16,130 @@ import {
     } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { images, theme } from "../constants/";
+import {openDatabase} from 'react-native-sqlite-storage';
+
 //theme
 const {COLORS, FONTS, SIZES} = theme;
 
-
+const db = openDatabase({
+    name:'yalhir',
+})
 const Login = ({ navigation }) =>{
     const [password, setPassword] = useState('');
+    const [login, setLogin] = useState('');
+    const [info, setInfoapp] = useState("")
+    useEffect(() => {
+      getInfoapp()
+        AsyncStorage.getItem('@login').then((value) =>{
+
+            console.log(value)
+          })
+    }, [])
+    const updateConnexion =() =>{
+        db.transaction(txn => {
+          txn.executeSql(
+            `
+           Update Connexion set isconnected='1' where id=1
+            `,[],
+            (sqlTxn, res)=>{
+              console.log(`table updated successfully`)
+            },
+            error =>{
+              console.log('error on updating table' + error.message)
+            }
+          )
+        })
+    }
+    const checkLogin =(password) =>{
+        db.transaction(txn => {
+          txn.executeSql(
+            `
+           SELECT  * FROM User where password='${password}'
+            `,[],
+            (sqlTxn, res)=>{
+                let len = res.rows.length;
+                if(len>0){
+                    return 1
+                }else{
+                   return 0
+                }
+            },
+            error =>{
+               return 0
+            }
+          )
+        })
+        }
+        function getInfoapp(){
+          db.transaction(txn => {
+            txn.executeSql(
+              `
+             SELECT  * FROM Infoapp
+              `,[],
+              (sqlTxn, res)=>{
+                  let len = res.rows.length;
+                  if(len>0){
+                    let results = [];
+                    for (let i = 0; i < len; i++) {
+                     let item = res.rows.item(i);
+                     results.push({
+                       id:item.id,
+                       datefinApp:item.datefinApp,
+                     })            
+                    }
+                    console.log(results)
+                    setInfoapp(results)
+                  }
+                                       
+              },
+              error =>{ console.log(error.message)}
+            )
+          })  
+         }
     function home(){
-        if(password == "1351"){
-            navigation.navigate('Home');
-        }
-        else{
-            Alert.alert(
-                "Diso ny code izay nosoratanao"
-              );
-        }
-       
-        console.log(password);
+        db.transaction(txn => {
+            txn.executeSql(
+              `
+             SELECT  * FROM User where password='${password}'
+              `,[],
+              (sqlTxn, res)=>{
+                  let len = res.rows.length;
+                  var today = new Date(),
+                  date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                  console.log(info[0].datefinApp);
+                  if(len>0){
+                     AsyncStorage.setItem('@isAdmin',res.rows.item(0).isAdmin)
+                     console.log(date);
+                     navigation.navigate('DrawerHome');
+                  }else{
+                    Alert.alert(
+                        "Diso ny code izay nosoratanao"
+                      );
+                  }
+              },
+              error =>{
+                Alert.alert(
+                    "Diso ny code izay nosoratanao"
+                  );
+              }
+            )
+          })
+      
+  
     }
     return (
-        <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
+        <ScrollView style ={{flex:1, backgroundColor:'#f2c750'}} 
         showsHorizontalScrollIndicator={false}>
              <ImageBackground
-             source={require("../assets/images/loginBackground.png")}
-             style={{height:Dimensions.get('window').height/2.5,}}
+             source={require("../assets/images/loginBackground2.jpg")}
+             style={{height:Dimensions.get('window').height/2.5}}
              
              />
              <View style={styles.bottomView}>
                 <View style={{padding:50}}>
                     <Text style={{ ...FONTS.h2,fontSize:27,color: COLORS.black}}>Welcome to Yalhir </Text>
-                    <Text style={{ ...FONTS.body4,color: COLORS.gray}}>Andao aingana ary hiara hira isika 734 eh</Text>
-                    <Text style={{ ...FONTS.body4,color: COLORS.gray}}>Arahana tsara ilay hira amin'izay tsy diso</Text>
+                    <Text style={{ ...FONTS.body3,color: COLORS.gray}}>Hodu la Adonai ki tov   <Text style={{fontSize:18}}>הודו לה יהוהכי טוב </Text></Text>
+                    <Text style={{ ...FONTS.body3,color: COLORS.gray}}>Ki leolam hasdo      <Text style={{fontSize:18}}>כִּי לְעוֹלָם חַסְדּוֹ</Text></Text>
                 </View> 
                 <View style={{left:50}}>
                     <Text style={{ ...FONTS.h3,color: COLORS.gray}}>Ampidiro eto ny code</Text>
@@ -73,7 +167,7 @@ const Login = ({ navigation }) =>{
                     borderTopStartRadius:10,
                     paddingLeft:50,
                     borderBottomEndRadius:10,
-                    backgroundColor:'orange',
+                    backgroundColor:'black',
                     }}
                 onPress={()=>home()}
                 >
@@ -94,12 +188,13 @@ const styles = StyleSheet.create({
     },
     input: {
         width:300,
-        left:35
+        left:35,
+        backgroundColor:'transparent'
         
     },
     bottomView:{
         flex:1.5,
-        backgroundColor:'#ffffff',
+        backgroundColor:'#f2c750',
         bottom:50,
         borderTopStartRadius:60,
         borderTopEndRadius:60,

@@ -1,4 +1,5 @@
 import React, {useState,useEffect} from "react";
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import {
     SafeAreaView,
     View,
@@ -7,9 +8,13 @@ import {
     Animated,
     Image,
     TouchableOpacity,
+    TouchableHighlight,
     ImageBackground,
     Dimensions,
+    FlatList,
     ScrollView,
+    Pressable,
+    Button
 
     } from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -20,42 +25,33 @@ import {openDatabase} from 'react-native-sqlite-storage';
 
 //theme
 const {COLORS, FONTS, SIZES} = theme;
-const list = [
-    {
-      id:'1',
-      name: 'POOPY',
-      avatar_url: require("../assets/images/poopy.jpg"),
-      subtitle: 'Yeladim'
-    },
-    {
-      id:'2',
-      name: 'Ryvkah',
-      avatar_url:  require("../assets/images/yael.jpg"),
-      subtitle: 'Batim'
-    },
-  ];
-  const db = openDatabase({
+const {width} = Dimensions.get("screen")
+const cardWith = width/2 -20
+const db = openDatabase({
     name:'yalhir',
-  })
+})
 const Home = ({ navigation }) =>{
     const [search, setSearch] = useState('');
     const [artist, setArtist] = useState([]);
+    const [isLoggedIn, setisLoggedIn] = useState('');
     function ficheItem(id){
         navigation.navigate('FicheItem', {itemId: id});
     }
-    const getArtist =() =>{
+    const getArtist =(e="") =>{ 
+      let where =""
+      if(e!=""){
+          where = ` where username like '%${e}%'`
+      }
         db.transaction(txn => {
           txn.executeSql(
             `
-            SELECT * from Artist
+            SELECT * from Artist ${where} order by username asc
             `,[],
             (sqlTxn, res)=>{
-              console.log('Artist retrieved successfully');
               let len = res.rows.length;
               if(len>0){
                 let results = [];
                 for (let i = 0; i < len; i++) {
-                  console.log(res.rows.item(i))
                  let item = res.rows.item(i);
                  const photolink = require(`../assets/images/artist/noname.jpg`);
                 
@@ -74,10 +70,7 @@ const Home = ({ navigation }) =>{
                     if(item.username ==  "Toliara")
                         photolink = require(`../assets/images/artist/toliara.jpg`)    
                     if(item.username ==  "Iaakov")
-                        photolink = require(`../assets/images/artist/iaakov.jpg`)                         
-                   
-                  
-                
+                        photolink = require(`../assets/images/artist/iaakov.jpg`)                          
                  results.push({
                     idArtist:item.idArtist,
                     username:item.username,
@@ -96,17 +89,61 @@ const Home = ({ navigation }) =>{
           )
         })
         }
+        function synchronize(){
+          navigation.navigate('Admin')
+        }
+        function logout(){
+          AsyncStorage.removeItem('@isAdmin')
+          navigation.navigate('Login')
+        }
         useEffect(() => {
+          AsyncStorage.getItem('@isAdmin').then((value) =>{
+            setisLoggedIn(value)
+             console.log('UseEffect:>@isAdmin : '+value)
+           })
             getArtist();
-            
-            
+            console.log('isLoggedIn'+isLoggedIn)           
           }, [])
+
+    const Card = ({artist}) =>{
+      return (
+        <TouchableHighlight
+                          key={artist.item.idArtist}
+                          onPress={()=>ficheItem(artist.item.idArtist)}
+                          underlayColor='white'
+                          activeOpacity={0.9}
+                          >
+        <View style={styles.card}>
+          
+          <View style={{alignItems:'center',top:-20}}>
+              <Avatar source={artist.item.photo} rounded size={120}/>
+          </View>
+          <View style={{marginHorizontal:20}}>
+            <Text style={{fontSize:18, fontWeight:'bold',color:'black'}}>{artist.item.username}</Text>
+            <Text style={{fontSize:14, color:'gray',marginTop:2}}>Group: {artist.item.belongsTo}</Text>
+          </View>
+         <View style={styles.btnView}>
+            <Ionicons
+                style={styles.icon}
+                testID="nextButton"
+                name="arrow-forward-outline"
+                color="gray"
+                size={22}
+            />
+         </View>
+        </View>
+        </TouchableHighlight>
+        
+      )
+    }
+    function goToFavoris(){
+      navigation.navigate('Favoris')
+    }
     return (
-        <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
-        showsHorizontalScrollIndicator={false}>
+        <SafeAreaView style={{flex:1,backgroundColor:'#f2c750'}}>
              <ImageBackground
              source={require("../assets/images/homeBackground.jpg")}
-             style={{height:Dimensions.get('window').height/3.8,}}
+             style={{height:Dimensions.get('window').height/8,}}
              
              >
                   <View style={styles.inputContainer}>
@@ -114,9 +151,8 @@ const Home = ({ navigation }) =>{
                     label="Hitady"
                     style={styles.input}
                     placeholder="Hitady mpihira 734"
-                    secureTextEntry={true}
                     defaultValue={search}
-                    onChangeText={search => setSearch(search)}
+                    onChangeText={(e) => getArtist(e)}
                     />
                     <Ionicons
                     style={styles.searchIcon}
@@ -125,34 +161,78 @@ const Home = ({ navigation }) =>{
                     color="black"
                     size={24}
                     />
+                   
                  </View>
              </ImageBackground>
-             <View style={styles.bottomView}>
-                <View style={{paddingLeft:20, paddingRight:20}}>
-                    {
-                        artist.map((l, i) => (
-                        <TouchableOpacity
-                         key={l.idArtist}
-                         onPress={()=>ficheItem(l.idArtist)}
-                         >
-                            <ListItem  bottomDivider>
-                                <Avatar 
-                                rounded 
-                                size={50}
-                                source={l.photo}
-                                />
-                                <ListItem.Content>
-                                <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h5 }}>{l.username}</ListItem.Title>
-                                <ListItem.Subtitle>{l.belongsTo}</ListItem.Subtitle>
-                                </ListItem.Content>
-                                <Text>2012</Text>
-                            </ListItem>
-                        </TouchableOpacity>
-                        ))
-                    }
-                </View>
-            </View>
-        </ScrollView>
+             <View style={styles.menuListContainer}>
+                 {isLoggedIn == 1 ?
+                  <View >
+                 <TouchableHighlight
+                 onPress={()=>synchronize()} activeOpacity={0.8}
+                 underlayColor='#f7bd36'>
+                 <View
+                   style={styles.menuBtn}>
+                      <View  style={styles.menuBtnImgIcon}>
+                      <Ionicons
+                    testID="nextButton"
+                    name="md-refresh-circle"
+                    color='black'
+                    size={24}
+                    />
+                    </View>
+                   <Text style={styles.btnText}>M à J</Text>
+                      
+                 </View>
+               </TouchableHighlight>
+               </View>
+                   
+               :<></>}
+               <Text>&nbsp;</Text>
+               <View>
+               <TouchableHighlight
+                onPress={goToFavoris} activeOpacity={0.8}
+                 underlayColor='#f7bd36'>
+                 <View
+                   style={styles.menuBtn}>
+                      <View  style={styles.menuBtnImgIcon}>
+                      <Ionicons
+                    testID="nextButton"
+                    name="md-heart"
+                    color='#f50a4c'
+                    size={24}
+                    />
+                    </View>
+                   <Text style={{...styles.btnText}}>Likes</Text>
+                 </View>
+               </TouchableHighlight>
+               </View> 
+               <View>
+               <TouchableHighlight
+                 onPress={()=>logout()} activeOpacity={0.8}
+                 underlayColor='#f7bd36'>
+                 <View
+                   style={styles.menuBtn}>
+                      <View  style={styles.menuBtnImgIcon}>
+                      <Ionicons
+                    testID="nextButton"
+                    name="md-log-out"
+                    color='black'
+                    size={24}
+                    />
+                    </View>
+                   <Text style={styles.btnText}>Hiala</Text>
+                 </View>
+               </TouchableHighlight>
+               </View> 
+               </View>
+             <FlatList
+                    showsVerticalScrollIndicator={false}
+                    numColumns={2}
+                    data={artist}
+                    renderItem={(item)=><Card artist={item}/>}
+                  />
+             
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
@@ -165,7 +245,8 @@ const styles = StyleSheet.create({
     input:{
         color:COLORS.black,
         width:275,
-        paddingLeft:10
+        paddingLeft:10,
+        height:50
       
  
     },
@@ -175,17 +256,114 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
-        height:62,
+        height:49,
         textAlign:'center',
-        paddingTop:22
+        paddingTop:15
     },
     inputContainer:{
         opacity:0.7,
         alignItems:'center',
         justifyContent:'center',
-        padding:50,
+        padding:30,
         flex: 1,
         flexDirection: 'row',
+
+    },
+    button: {
+      borderWidth: 1,
+      borderRadius: 2,
+      borderColor: 'transparent',
+      borderBottomWidth: 0,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 5,
+      marginLeft: 5,
+      marginRight: 5,
+      marginTop: 10,
+      backgroundColor:'black'
+    },
+    btnClickContain: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: '#3b3b3d',
+      borderRadius: 3,
+      padding: 5,
+      marginTop: 1,
+      marginBottom: 1,
+      height:50,
+      width:150
+    },
+    btnContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'stretch',
+      alignSelf: 'stretch',
+      borderRadius: 10,
+    },
+    btnIcon: {
+      height: 25,
+      width: 25,
+    },
+    btnText: {
+      fontSize: 16,
+      color: 'black',
+      marginLeft: 10,
+      marginTop: 2,
+      fontWeight:'bold'
+    },
+    card:{
+      height:220,
+      width:cardWith,
+      marginHorizontal:10,
+      marginBottom:5,
+      marginTop:40,
+      borderRadius:15,
+      elevation:13,
+      backgroundColor:'white'
+    },
+    btnView:{
+      height:30,
+      width:30,
+      borderRadius:20,
+      backgroundColor:'transparent',
+      justifyContent:'center',
+      alignItems:'center',
+      marginLeft:130
+    },
+    menuListContainer:{
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'center',
+      borderBottomLeftRadius:30,
+      borderBottomRightRadius:30,
+      backgroundColor:'#fccf03',
+      paddingHorizontal:5,
+      paddingVertical:5,
+      
+    },
+    menuBtn:{
+      height:40,
+      width:120,
+      borderRadius:30,
+      marginRight:7,
+      backgroundColor:'#ffc75e',
+      justifyContent:'center',
+      alignItems:'center',
+      paddingHorizontal:5,
+      flexDirection:'row',
+      elevation:10
+    },
+    menuBtnImgIcon:{
+      height:25,
+      width:25,
+      backgroundColor:'#ffc75e',
+      borderRadius:20,
+      justifyContent:'center',
+      alignItems:'center',
+
     }
    
 })

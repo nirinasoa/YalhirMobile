@@ -4,7 +4,7 @@
  *
  * @format
  * @flow strict-local
- */
+  */
  import 'react-native-gesture-handler';
  import * as React from 'react';
  import {   createDrawerNavigator,
@@ -13,6 +13,8 @@
     DrawerItem, } from '@react-navigation/drawer';
 import Login from './Login';
 import Home from './Home';
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
     SafeAreaView,
     View,
@@ -27,11 +29,37 @@ import {
     Button,
     Alert
     } from 'react-native';
+import OnBoarding from './OnBoarding/OnBoarding';
+import {openDatabase} from 'react-native-sqlite-storage';
+import FicheItem from './FicheItem';
+import Song from './Song';
+import Favoris from './Favoris';
+import Info from './Info';
  //Screens
 
  
  // const Stack = createStackNavigator();
- const Drawer = createDrawerNavigator();
+ const db = openDatabase({
+  name:'yalhir',
+})
+  const Drawer = createDrawerNavigator();
+
+ const logout =({navigation}) =>{
+  db.transaction(txn => {
+    txn.executeSql(
+      `
+     Update Connexion set isconnected='0' where id=1
+      `,[],
+      (sqlTxn, res)=>{
+        console.log(`table updated successfully`)
+      },
+      error =>{
+        console.log('error on updating table' + error.message)
+      }
+    )
+  })
+  navigation.navigate('Login');
+  }
  function CustomDrawerContent(props) {
     return (
       <DrawerContentScrollView {...props}>
@@ -39,11 +67,16 @@ import {
             style = {{ width: 200, height:200, alignItems:'center', justifyContent:'center', marginLeft:10}}
         />
         <DrawerItemList {...props} />
-        <DrawerItem label="Help" onPress={() => alert('Link to help')} />
+        <DrawerItem label="Logout" onPress={() => logout()} />
       </DrawerContentScrollView>
     );
   }
+  /*const logout = ({ navigation }) =>{
+    AsyncStorage.removeItem('@login')
+    navigation.navigate('Login');
+    }*/
  const Menu = () =>{
+ 
    return (
        <Drawer.Navigator
        drawerContent={props => <CustomDrawerContent {...props} />}
@@ -53,9 +86,33 @@ import {
         },
       }}
        >
-         <Drawer.Screen name="Login" component={Login} options={{headerShown: false }} />
-         <Drawer.Screen name="Home" component={Home} />
+        <Drawer.Screen name="Home" component={Home}  
+        options={{
+          title: 'Mpamoron-kira', //Set Header Title
+          headerStyle: {
+            backgroundColor: '#f7bd36', //Set Header color
+          }
+        }}
+        />
+        <Drawer.Screen name="Favoris" component={Favoris}  
+        options={{
+          title: 'Hira tena tiana', //Set Header Title
+          headerStyle: {
+            backgroundColor: '#f7bd36', //Set Header color
+          }
+        }}
+        />
+          <Drawer.Screen name="Info" component={Info}  
+        options={{
+          title: 'Yaldot-Team', //Set Header Title
+          headerStyle: {
+            backgroundColor: '#f7bd36', //Set Header color
+          }
+        }}
+        />
        </Drawer.Navigator>
+       
+      
    )
  }
  
