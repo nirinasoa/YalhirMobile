@@ -25,6 +25,37 @@ const {COLORS, FONTS, SIZES} = theme;
 const db = openDatabase({
     name:'yalhir',
   })
+
+const team1 = [
+    {
+        username: "Ny Antsa",
+        img:require("../assets/images/nyantsa.jpg")
+    },
+    {
+        username: "Yael",
+        img:require("../assets/images/yael.jpg")
+    },
+    {
+        username: "Ny Toky",
+        img:require("../assets/images/nytoky.jpg")
+    },
+
+];
+const team2 = [
+    {
+        username: "Miora",
+        img:require("../assets/images/miora.jpg")
+    },
+    {
+        username: "Andrianina",
+        img:require("../assets/images/andrianina.jpg")
+    },
+    {
+        username: "Lianasoa",
+        img:require("../assets/images/lianasoa.jpg")
+    },
+    
+];
 const Info = ({ route, navigation }) =>{
     const [defaultRating, setdefaultRating] = useState(1);
     const [maxRating, setmaxRating] = useState([1,2,3,4,5]);   
@@ -84,28 +115,50 @@ const Info = ({ route, navigation }) =>{
             </View>
         )
     }
-    
+    function listTeam1(){
+        return team1.map((item, index)=>{ 
+            return (
+            <Avatar 
+            rounded 
+            key={index}
+            size={70}
+            source={item.img}/>
+            )
+        })
+    }
+    function listTeam2(){
+        return team2.map((item, index)=>{ 
+            return (
+            <Avatar 
+            rounded 
+            key={index}
+            size={70}
+            source={item.img}/>
+            )
+        })
+    }
 useEffect(() => {
     getValueRateUs()
 }, [])
     return (
-        <ScrollView style ={{flex:1}} 
+        <ScrollView style ={{flex:1, backgroundColor:'black'}} 
         showsHorizontalScrollIndicator={false}>
           
           <LinearGradient colors={['black','black', 'black']}>
+
+            <View  style={{alignItems: "center",padding:5,flex:1,justifyContent:'center',marginTop:50}}>
            
-            <View  style={{alignItems: "center",padding:5,flex:1,justifyContent:'center',marginTop:100}}>
-            <Avatar 
-                 rounded 
-                 size={220}
-                 source={require(`../assets/images/yaldot.jpg`)}
-                
-             />
               <Text style={{ ...FONTS.h2,fontSize:30,color: COLORS.white,padding:10}}>Team Yaldot</Text>
               <Text style={{ fontSize:16,color: COLORS.white,padding:20}}>
                   Raha misy fanotaniana tianao apetraka aminay, dia afaka alefa amin'ny:
                   <Text>➤ yaldot-team@gmail.com</Text>
               </Text>
+              <View style={styles.menuListContainer}>
+          {listTeam1()}
+          </View>
+          <View style={styles.menuListContainer}>
+          {listTeam2()}
+            </View>
              <CustomRatingBar/>
              <Text style={{color:'white',fontSize:30,...FONTS.h2}}>
                  {defaultRating + '/'+ maxRating.length}
@@ -184,7 +237,15 @@ const styles = StyleSheet.create({
       paddingTop:10,
       color: '#ffffff',
       backgroundColor: 'transparent',
-    }
+    },
+    menuListContainer:{
+        flexDirection:'row',
+        justifyContent:'center',
+        marginTop:5,
+        padding:10
+   
+        
+      },
    
 })
 export default Info;

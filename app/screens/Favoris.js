@@ -41,11 +41,11 @@ const Favoris = ({ navigation }) =>{
             SELECT * from Song where  isFavorite='1'  ${where} order by title desc
             `,[],
             (sqlTxn, res)=>{
-              let len = res.rows.length;             
+              let len = res.rows.length;    
+              console.log(len)         
               if(len>0){
                 let results = [];
                 for (let i = 0; i < len; i++) {
-                 
                  let item = res.rows.item(i);
                  const photolink = require(`../assets/images/artist/noname.jpg`);
                 
@@ -90,12 +90,11 @@ const Favoris = ({ navigation }) =>{
         useEffect(() => {
             getArtist();
           }, [])
-          getArtist();
     return (
         <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
         showsHorizontalScrollIndicator={false}>
              <ImageBackground
-             source={require("../assets/images/homeBackground.jpg")}
+             source={require("../assets/images/search.jpg")}
              style={{height:Dimensions.get('window').height/3.8,}}
              
              >

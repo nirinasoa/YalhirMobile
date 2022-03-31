@@ -1,5 +1,6 @@
 import React, {useState,useEffect} from "react";
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
+import Snow from 'react-native-snow';
 import {
     SafeAreaView,
     View,
@@ -97,55 +98,59 @@ const Login = ({ navigation }) =>{
             )
           })  
          }
-    function home(){
-        db.transaction(txn => {
-            txn.executeSql(
-              `
-             SELECT  * FROM User where password='${password}'
-              `,[],
-              (sqlTxn, res)=>{
-                  let len = res.rows.length;
-                  var today = new Date();
-                  var dd = String(today.getDate()).padStart(2, '0');
-                  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                  var yyyy = today.getFullYear();
-
-                  current_date = yyyy + '-' + mm + '-' + dd
-                  last_date_app = info[0].datefinApp;
-                  isAdmin = res.rows.item(0).isAdmin;
-                  console.log('Is Admin='+isAdmin);
+         function home(){
+          db.transaction(txn => {
+              txn.executeSql(
+                `
+               SELECT  * FROM User where password='${password}'
+                `,[],
+                (sqlTxn, res)=>{
+                    let len = res.rows.length;
+                    if(len>0){
+                      var today = new Date();
+                      var dd = String(today.getDate()).padStart(2, '0');
+                      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                      var yyyy = today.getFullYear();
+                      const current_date = yyyy + '-' + mm + '-' + dd
+                      const last_date_app = info[0].datefinApp;
+                      const isAdmin = res.rows.item(0).isAdmin;
+                      AsyncStorage.setItem('@isAdmin',isAdmin)
+                      console.log('Is Admin='+isAdmin);
                   console.log('Date app = '+last_date_app);
                   console.log('Current Date  = '+current_date);
-
-                  var date2 = new Date('2022-03-28');
-                  console.log('date2  = '+date2);
-                  if(len>0 && current_date<=last_date_app && isAdmin==0){
-                     AsyncStorage.setItem('@isAdmin',isAdmin)
-                     console.log('user tsotra');
-                     navigation.navigate('DrawerHome');
-                  }
-                  else if(len>0 && isAdmin==1){
-                    AsyncStorage.setItem('@isAdmin',isAdmin)
-                    console.log('is Admin logged in');
-                    navigation.navigate('DrawerHome');
-                  }
-                  else{
-                    Alert.alert(
-                      "🎼Yalhir","Diso ny code izay nosoratanao (҂◡_◡). Manotania ny tomponandraikitra raha misy olana.Todah!"
-                      );
-                      navigation.navigate('Login');
-                  }
-              },
-              error =>{
-                Alert.alert(
-                  "🎼Yalhir","Diso ny code izay nosoratanao"
-                  );
-              }
-            )
-          })
-      
-  
-    }
+                      if(isAdmin==0){
+                        if(current_date>last_date_app ){
+                          Alert.alert(
+                            "🎼Yalhir","Diso ny code izay nosoratanao (҂◡_◡). Manotania ny tomponandraikitra raha misy olana.Todah!"
+                            );
+                        }else{
+                          navigation.navigate('DrawerHome');
+                        }
+                        
+                      }
+                      if(isAdmin==1){
+                        navigation.navigate('DrawerHome');
+                      }
+                      
+                      
+                    }
+                    else{
+                      Alert.alert(
+                        "🎼Yalhir","Diso ny code izay nosoratanao (҂◡_◡). Manotania ny tomponandraikitra raha misy olana.Todah!"
+                        );
+                        navigation.navigate('Login');
+                    }
+                },
+                error =>{
+                  Alert.alert(
+                    "🎼Yalhir","Diso ny code izay nosoratanao"
+                    );
+                }
+              )
+            })
+        
+    
+      }
     return (
         <ScrollView style ={{flex:1, backgroundColor:'#f2c750'}} 
         showsHorizontalScrollIndicator={false}>
@@ -155,6 +160,7 @@ const Login = ({ navigation }) =>{
              
              />
              <View style={styles.bottomView}>
+             <Snow  />
                 <View style={{padding:50}}>
                     <Text style={{ ...FONTS.h2,fontSize:27,color: COLORS.black}}>Welcome to Yalhir </Text>
                     <Text style={{ ...FONTS.body3,color: COLORS.gray}}>Hodu la Adonai ki tov   <Text style={{fontSize:18}}>הודו לה יהוהכי טוב </Text></Text>

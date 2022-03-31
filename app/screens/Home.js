@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState,useEffect,useRef } from "react";
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import {
     SafeAreaView,
@@ -6,22 +6,18 @@ import {
     StyleSheet,
     Text,
     Animated,
-    Image,
-    TouchableOpacity,
     TouchableHighlight,
     ImageBackground,
     Dimensions,
     FlatList,
-    ScrollView,
-    Pressable,
-    Button
 
     } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { ListItem, Avatar } from 'react-native-elements';
+import {  Avatar } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { images, theme } from "../constants/";
 import {openDatabase} from 'react-native-sqlite-storage';
+
 
 //theme
 const {COLORS, FONTS, SIZES} = theme;
@@ -34,6 +30,8 @@ const Home = ({ navigation }) =>{
     const [search, setSearch] = useState('');
     const [artist, setArtist] = useState([]);
     const [isLoggedIn, setisLoggedIn] = useState('');
+    const opacity = useState(new Animated.Value(0))[0]
+   
     function ficheItem(id){
         navigation.navigate('FicheItem', {itemId: id});
     }
@@ -97,6 +95,11 @@ const Home = ({ navigation }) =>{
           navigation.navigate('Login')
         }
         useEffect(() => {
+          Animated.timing(opacity, {
+            toValue:1,
+            duration:1000,
+            useNativeDriver:true
+          }).start();
           AsyncStorage.getItem('@isAdmin').then((value) =>{
             setisLoggedIn(value)
              console.log('UseEffect:>@isAdmin : '+value)
@@ -110,7 +113,7 @@ const Home = ({ navigation }) =>{
         <TouchableHighlight
                           key={artist.item.idArtist}
                           onPress={()=>ficheItem(artist.item.idArtist)}
-                          underlayColor='white'
+                          underlayColor='transparent'
                           activeOpacity={0.9}
                           >
         <View style={styles.card}>
@@ -133,7 +136,6 @@ const Home = ({ navigation }) =>{
          </View>
         </View>
         </TouchableHighlight>
-        
       )
     }
     function goToFavoris(){
@@ -225,21 +227,21 @@ const Home = ({ navigation }) =>{
                </TouchableHighlight>
                </View> 
                </View>
-               <Animated.View
-               animation="fadeInUp"
-               duration={1000}
-               >
-                  <FlatList
+                    <FlatList
+                   
                           showsVerticalScrollIndicator={false}
                           numColumns={2}
                           data={artist}
                           renderItem={(item)=><Card artist={item}/>}
-                        />
-             </Animated.View>
+                  />
         </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
+  fadingContainer: {
+    padding: 20,
+    backgroundColor: "powderblue"
+  },
     container: {
         flex:1,
         justifyContent: 'center',

@@ -5,16 +5,10 @@ import {
     View,
     StyleSheet,
     Text,
-    Animated,
-    Image,
     TouchableOpacity,
-    ImageBackground,
     Dimensions,
     TouchableHighlight,
     ScrollView,
-    Button,
-    Alert,
-     Modal, Pressable
     } from 'react-native';
     import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -201,8 +195,7 @@ const FicheItem = ({ route, navigation }) =>{
     return (
         <ScrollView style ={{flex:1}} 
         showsHorizontalScrollIndicator={false}>
-          
-          <LinearGradient colors={['black', '#262525', '#f7bd36']}>
+          <LinearGradient colors={['black', '#262525', '#f7bd36','#f7bd36','#f7bd36']}>
             <View style={styles.menuListContainer}>
                  {isLoggedIn == 1 ?
                   <View >
@@ -440,6 +433,7 @@ const styles = StyleSheet.create({
       backgroundColor:'#fccf03',
       paddingHorizontal:5,
       paddingVertical:5,
+     
       
     },
     menuBtn:{

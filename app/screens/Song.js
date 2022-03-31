@@ -123,14 +123,14 @@ const [_id, set_id] = useState('');
              
              >
                  <View style={styles.containerTitle}>
-                    <Text style={{ ...FONTS.h2,fontSize:27,color: COLORS.white,padding:8,}}>{title}</Text>
+                    <Text style={{ ...FONTS.h2,color: COLORS.white,padding:8}}>{title}</Text>
                     <Text style={{color: COLORS.white}}> ────────<Ionicons style={styles.icon} testID="nextButton" name="heart" color="black" size={20}
                     />  ─────────</Text>
                 </View>
                  
                 
                 <View style={styles.containerSong} >
-                    <View style={styles.containerLyrix} opacity={0.8}>
+                    <View style={styles.containerLyrix} >
                     {arrayOrder.map((value, index) => (
                         <Text key={index} style={styles.lyrix} >
                            {value.includes("[Ref]") ? <Text style={{color:'#ffe282'}}>{value}</Text> : value}
@@ -148,7 +148,7 @@ const [_id, set_id] = useState('');
 const styles = StyleSheet.create({
     containerTitle: {
         color:'brown',
-        left:'20%',
+        left:'2%',
       top:0
     },
     containerSong: {
@@ -184,7 +184,8 @@ const styles = StyleSheet.create({
          color: COLORS.white,
          padding:10,
          fontWeight:'900',
-         fontFamily:'Comic sans MS'
+         fontFamily:'Comic sans MS',
+         textTransform:'uppercase'
     },
     containerLyrix:{
         backgroundColor: COLORS.black,

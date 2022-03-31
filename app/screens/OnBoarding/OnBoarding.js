@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     },
     dot:{
         borderRadius: SIZES.radius,
-        backgroundColor: COLORS.white,
+        backgroundColor: '#914a17',
         marginHorizontal: SIZES.radius / 2
     },
     dotContainer:{
