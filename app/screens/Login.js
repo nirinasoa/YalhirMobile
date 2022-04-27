@@ -116,8 +116,8 @@ const Login = ({ navigation }) =>{
                       const isAdmin = res.rows.item(0).isAdmin;
                       AsyncStorage.setItem('@isAdmin',isAdmin)
                       console.log('Is Admin='+isAdmin);
-                  console.log('Date app = '+last_date_app);
-                  console.log('Current Date  = '+current_date);
+                      console.log('Date app = '+last_date_app);
+                      console.log('Current Date  = '+current_date);
                       if(isAdmin==0){
                         if(current_date>last_date_app ){
                           Alert.alert(
@@ -162,12 +162,12 @@ const Login = ({ navigation }) =>{
              <View style={styles.bottomView}>
              <Snow  />
                 <View style={{padding:50}}>
-                    <Text style={{ ...FONTS.h2,fontSize:27,color: COLORS.black}}>Welcome to Yalhir </Text>
+                    <Text style={{ ...FONTS.h2,fontSize:27,color: '#6b4803'}}>Welcome to Yalhir </Text>
                     <Text style={{ ...FONTS.body3,color: COLORS.gray}}>Hodu la Adonai ki tov   <Text style={{fontSize:18}}>הודו לה יהוהכי טוב </Text></Text>
                     <Text style={{ ...FONTS.body3,color: COLORS.gray}}>Ki leolam hasdo      <Text style={{fontSize:18}}>כִּי לְעוֹלָם חַסְדּוֹ</Text></Text>
                 </View> 
                 <View style={{left:50}}>
-                    <Text style={{ ...FONTS.h3,color: COLORS.gray}}>Ampidiro eto ny code</Text>
+                    <Text style={{ ...FONTS.h3,color: '#593c03'}}>Ampidiro eto ny code</Text>
                 </View> 
                 <View style={{padding:10}}>
                     <TextInput
@@ -192,7 +192,8 @@ const Login = ({ navigation }) =>{
                     borderTopStartRadius:10,
                     paddingLeft:50,
                     borderBottomEndRadius:10,
-                    backgroundColor:'black',
+                    backgroundColor:'#593c03',
+                    elevation:10
                     }}
                 onPress={()=>home()}
                 >
@@ -212,7 +213,8 @@ const styles = StyleSheet.create({
         backgroundColor:COLORS.white,
     },
     input: {
-        width:300,
+        // width:300,
+        width:Dimensions.get('window').width/1.3,
         left:35,
         backgroundColor:'transparent',
         borderStartWidth : 2,
@@ -221,7 +223,8 @@ const styles = StyleSheet.create({
         boderLeftWidth: 2,
         borderRightWidth: 3,
         borderBottomWidth : 2,
-        borderColor:'black'
+        borderColor:'#6b4803',
+        paddingLeft:100,
         
     },
     bottomView:{

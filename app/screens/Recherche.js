@@ -24,76 +24,25 @@ const {COLORS, FONTS, SIZES} = theme;
 const db = openDatabase({
     name:'yalhir',
   })
-const Favoris = ({ navigation }) =>{
+const Recherche = ({ navigation }) =>{
     const [search, setSearch] = useState('');
+    const [searchInit, setInitSearch] = useState('');
     const [artist, setArtist] = useState([]);
     function displayLyrics(id){
         navigation.navigate('Song', {idSong: id});
     }
-    const getFavoris =() =>{ 
-        let where =""
-     
-          db.transaction(txn => {
-            txn.executeSql(
-              `
-              SELECT * from Song where  isFavorite='1' order by title desc
-              `,[],
-              (sqlTxn, res)=>{
-                let len = res.rows.length;    
-                console.log(len)         
-                if(len>0){
-                  let results = [];
-                  for (let i = 0; i < len; i++) {
-                   let item = res.rows.item(i);
-                   const photolink = require(`../assets/images/artist/noname.jpg`);
-                  
-                      if(item.idArtist ==  "3")
-                          photolink = require(`../assets/images/artist/poopy.jpg`)
-                      if(item.idArtist ==  "2")
-                          photolink = require(`../assets/images/artist/ndriana.jpg`)
-                      if(item.idArtist ==  "1")
-                              photolink = require(`../assets/images/artist/ryvkah.jpg`)
-                      if(item.idArtist ==  "5")
-                              photolink = require(`../assets/images/artist/petoela.jpg`)
-                      if(item.idArtist ==  "4")
-                              photolink = require(`../assets/images/artist/kefa.jpg`)
-                      if(item.idArtist ==  "7")
-                              photolink = require(`../assets/images/artist/yaldot.jpg`) 
-                      if(item.idArtist ==  "6")
-                          photolink = require(`../assets/images/artist/toliara.jpg`)    
-                      if(item.idArtist ==  "8")
-                          photolink = require(`../assets/images/artist/iaakov.jpg`)                         
-                        
-                      results.push({
-                      id:item.id,
-                      idArtist:item.idArtist,
-                      title:item.title,
-                      photo:photolink,
-                      paragraph1:item.paragraph1,
-                      yearOfProduction:item.yearOfProduction,
-                      
-                     
-                   })
-                    
-                  }
-                  setArtist(results)
-                }
-              },
-              error =>{
-                console.log('error on displaying table' + error.message)
-              }
-            )
-          })
-          }
-    const getArtist =(e) =>{ 
+    const getSong =(e) =>{ 
+      setInitSearch(e)
       let where =""
       if(e!=""){
-          where = ` and title like '%${e}%'`
+          where = ` title like '%${e}%' or paragraph1 like '%${e}%' or paragraph2 like '%${e}%' or paragraph3 like '%${e}%' 
+          or paragraph4 like '%${e}%' or paragraph5 like '%${e}%' or paragraph6 like '%${e}%' 
+          `
       }
         db.transaction(txn => {
           txn.executeSql(
             `
-            SELECT * from Song where  isFavorite='1'  ${where} order by title desc
+            SELECT * from Song where  ${where} order by title desc
             `,[],
             (sqlTxn, res)=>{
               let len = res.rows.length;    
@@ -144,23 +93,23 @@ const Favoris = ({ navigation }) =>{
         }
         
         useEffect(() => {
-            getFavoris();
+           
           }, [])
     return (
         <ScrollView style ={{flex:1, backgroundColor:'#ffffff'}} 
         showsHorizontalScrollIndicator={false}>
              <ImageBackground
-             source={require("../assets/images/search.jpg")}
-             style={{height:Dimensions.get('window').height/3.8,}}
+             source={require("../assets/images/bannerRecherche.jpg")}
+             style={{height:Dimensions.get('window').height/5.5,}}
              
              >
                   <View style={styles.inputContainer}>
                   <TextInput
-                    label="Hitady"
+                    label="Hamantatra hira"
                     style={styles.input}
-                    placeholder="Hitady mpihira 734"
+                    placeholder="Hitady hira na tonony"
                     defaultValue={search}
-                    onChangeText={(e) => getArtist(e)}
+                    onChangeText={(e) => getSong(e)}
                     />
                     <Ionicons
                     style={styles.searchIcon}
@@ -173,6 +122,14 @@ const Favoris = ({ navigation }) =>{
              </ImageBackground>
              <View style={styles.bottomView}>
                 <View style={{paddingLeft:20, paddingRight:20}}>
+                {searchInit == '' ?
+                    <View style={{backgroundColor:'#ffda75'}}>
+                        <Text style={styles.bottomViewText}>{searchInit == '' ? 
+                            'Hey, Te hamantatra hira ve ianao?｡◕‿◕｡ Tadiavo etsy ambony ilay tononkira ary, aza soratana fotsiny hoe bla bla bla na hum humm fa tsy hitany hihi'
+                            :''}
+                        </Text>
+                    </View>
+                    :<></>}
                     {
                         artist.map((l, i) => (
                         <TouchableOpacity
@@ -182,12 +139,12 @@ const Favoris = ({ navigation }) =>{
                             <ListItem  bottomDivider>
                                 <Avatar 
                                 rounded 
-                                size={50}
+                                size={60}
                                 source={l.photo}
                                 />
                                 <ListItem.Content>
                                 <ListItem.Title style={{  fontWeight: 'bold', ...FONTS.h5 }}>{l.title}</ListItem.Title>
-                                <ListItem.Subtitle numberOfLines={2} style={{ textTransform: 'lowercase'}}>{l.paragraph1}</ListItem.Subtitle>
+                                <ListItem.Subtitle numberOfLines={3} style={{ textTransform: 'lowercase'}}>{l.paragraph1}</ListItem.Subtitle>
                                 </ListItem.Content>
                                 <Text>{l.yearOfProduction}</Text>
                             </ListItem>
@@ -208,8 +165,17 @@ const styles = StyleSheet.create({
     },
     input:{
         color:COLORS.black,
-        width:270,
+        width:275,
+        height:50,
         paddingLeft:10
+      
+ 
+    },
+    bottomViewText:{
+        // color:COLORS.black,
+        // width:275,
+        fontSize:17,
+        padding:20
       
  
     },
@@ -218,10 +184,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        height:62,
+        backgroundColor: '#fccf03',
+        height:49,
         textAlign:'center',
-        paddingTop:22
+        paddingTop:15
     },
     inputContainer:{
         opacity:0.7,
@@ -233,4 +199,4 @@ const styles = StyleSheet.create({
     }
    
 })
-export default Favoris;
+export default Recherche;

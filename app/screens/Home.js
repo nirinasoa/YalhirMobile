@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     },
     input:{
         color:COLORS.black,
-        width:275,
+        width:Dimensions.get('window').width/1.5,
         paddingLeft:10,
         height:50,
       

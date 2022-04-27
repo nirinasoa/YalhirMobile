@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState,useEffect, BackHandler } from "react";
 import LinearGradient from 'react-native-linear-gradient';
 import {
     SafeAreaView,
@@ -9,6 +9,7 @@ import {
     Dimensions,
     TouchableHighlight,
     ScrollView,
+    
     } from 'react-native';
     import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -188,12 +189,15 @@ const FicheItem = ({ route, navigation }) =>{
       function synchronize(){
         navigation.navigate('Admin')
       }
+      function home(){
+        navigation.navigate('Home')
+      }
       function logout(){
         AsyncStorage.removeItem('@isAdmin')
         navigation.navigate('Login')
       }
     return (
-        <ScrollView style ={{flex:1}} 
+        <ScrollView style ={{flex:1, backgroundColor:'#f7bd36'}} 
         showsHorizontalScrollIndicator={false}>
           <LinearGradient colors={['black', '#262525', '#f7bd36','#f7bd36','#f7bd36']}>
             <View style={styles.menuListContainer}>
@@ -218,7 +222,25 @@ const FicheItem = ({ route, navigation }) =>{
                </TouchableHighlight>
                </View>
                    
-               :<></>}
+               :<View >
+               <TouchableHighlight
+               onPress={()=>home()} activeOpacity={0.8}
+               underlayColor='#f7bd36'>
+               <View
+                 style={styles.menuBtn}>
+                    <View  style={styles.menuBtnImgIcon}>
+                    <Ionicons
+                  testID="nextButton"
+                  name="home"
+                  color='black'
+                  size={24}
+                  />
+                  </View>
+                 <Text style={styles.btnText}>Artist</Text>
+                    
+               </View>
+             </TouchableHighlight>
+             </View>}
                <Text>&nbsp;</Text>
                <View>
                <TouchableHighlight
@@ -438,7 +460,7 @@ const styles = StyleSheet.create({
     },
     menuBtn:{
       height:40,
-      width:120,
+      width:110,
       borderRadius:30,
       marginRight:7,
       backgroundColor:'#ffc75e',

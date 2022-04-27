@@ -1,20 +1,14 @@
 import React, {useState,useEffect} from "react";
 import {
-    SafeAreaView,
     View,
     StyleSheet,
     Text,
-    Animated,
-    Image,
-    TouchableOpacity,
     ImageBackground,
     Dimensions,
     ScrollView,
-    Button,
-    Alert
+    TouchableOpacity,
     } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { ListItem, Avatar } from 'react-native-elements';
+import Clipboard from '@react-native-clipboard/clipboard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { images, theme } from "../constants/";
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -30,17 +24,24 @@ const Song = ({ route, navigation }) =>{
     const [songs, setSong] = useState([]);
     const [arrayOrder, setArrayOrder] = useState([]);
     const [title, setTitle] = useState('');
-const [yearProduction, setYearProduction] = useState('');
-const [order, setOrder] = useState('');
-const [refrain, setRefrain] = useState('');
-const [photolink, setPhotolink] = useState('');
-const [paragraph1, setParagraph1] = useState('');
-const [paragraph2, setParagraph2] = useState('');
-const [paragraph3, setParagraph3] = useState('');
-const [paragraph4, setParagraph4] = useState('');
-const [paragraph5, setParagraph5] = useState('');
-const [paragraph6, setParagraph6] = useState('');
-const [_id, set_id] = useState('');
+    const [yearProduction, setYearProduction] = useState('');
+    const [order, setOrder] = useState('');
+    const [refrain, setRefrain] = useState('');
+    const [photolink, setPhotolink] = useState('');
+    const [paragraph1, setParagraph1] = useState('');
+    const [paragraph2, setParagraph2] = useState('');
+    const [paragraph3, setParagraph3] = useState('');
+    const [paragraph4, setParagraph4] = useState('');
+    const [paragraph5, setParagraph5] = useState('');
+    const [paragraph6, setParagraph6] = useState('');
+    const [_id, set_id] = useState('');
+    const [copiedText, setCopiedText] = useState('');
+
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setCopiedText(text);
+  };
     const getSongs =(id) =>{
         db.transaction(txn => {
           txn.executeSql(
@@ -132,11 +133,11 @@ const [_id, set_id] = useState('');
                 <View style={styles.containerSong} >
                     <View style={styles.containerLyrix} >
                     {arrayOrder.map((value, index) => (
-                        <Text key={index} style={styles.lyrix} >
-                           {value.includes("[Ref]") ? <Text style={{color:'#ffe282'}}>{value}</Text> : value}
-                         </Text>
+                        <Text  key={index} style={styles.lyrix} >
+                            {value.includes("[Ref]") ? <Text style={{color:'#ffe282'}}>{value}</Text> : value}
+                        </Text>
                     ))}
-                    <Text style={{color: COLORS.white}}> ─────────────────</Text>
+                    <Text style={{color: COLORS.white}}> </Text>
                     </View>
                 </View>
             
