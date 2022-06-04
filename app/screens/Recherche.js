@@ -125,7 +125,7 @@ const Recherche = ({ navigation }) =>{
                 {searchInit == '' ?
                     <View style={{backgroundColor:'#ffda75'}}>
                         <Text style={styles.bottomViewText}>{searchInit == '' ? 
-                            'Hey, Te hamantatra hira ve ianao?｡◕‿◕｡ Tadiavo etsy ambony ilay tononkira ary, aza soratana fotsiny hoe bla bla bla na hum humm fa tsy hitany hihi'
+                            'Hey, Te hamantatra hira ve ianao?｡◕‿◕｡ Tadiavo etsy ambony ilay tononkira ary'
                             :''}
                         </Text>
                     </View>

@@ -110,7 +110,7 @@ const FicheItem = ({ route, navigation }) =>{
           db.transaction(txn => {
             txn.executeSql(
               `
-              SELECT * from Song where title like '%${e}%' and idArtist = ${itemId}
+              SELECT * from Song where (title like '%${e}%' or paragraph1 like '%${e}%' or paragraph2 like '%${e}%' or paragraph3 like '%${e}%'  or paragraph5 like '%${e}%' or paragraph1 like '%${e}%'  or paragraph6 like '%${e}%') and idArtist = ${itemId}
               `,[],
               (sqlTxn, res)=>{
   
@@ -294,7 +294,7 @@ const FicheItem = ({ route, navigation }) =>{
                   <TextInput
                  
                     style={styles.input}
-                    placeholder="Hitady hira ..."
+                    placeholder="Hitady ny hirany ..."
                     placeholderTextColor={'#eee'}
                     theme={{
                       colors: {

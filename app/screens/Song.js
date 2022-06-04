@@ -7,11 +7,13 @@ import {
     Dimensions,
     ScrollView,
     TouchableOpacity,
+    TouchableHighlight
     } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { images, theme } from "../constants/";
 import {openDatabase} from 'react-native-sqlite-storage';
+import SliderA from '@react-native-community/slider';
 //theme
 const {COLORS, FONTS, SIZES} = theme;
 
@@ -35,9 +37,15 @@ const Song = ({ route, navigation }) =>{
     const [paragraph5, setParagraph5] = useState('');
     const [paragraph6, setParagraph6] = useState('');
     const [_id, set_id] = useState('');
+    const [fontSize, setFontSize] = useState(16);
+    const [interligne, setInterligne] = useState(25);
+    const [opacity, setOpacity] = useState(0.8);
     const [copiedText, setCopiedText] = useState('');
+    const [parameter, setParameter] = useState(false);
 
-
+    function configure(){
+       setParameter(parameter => !parameter)
+    }
   const fetchCopiedText = async () => {
     const text = await Clipboard.getString();
     setCopiedText(text);
@@ -113,36 +121,118 @@ const Song = ({ route, navigation }) =>{
         
       }, [])
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} style ={{flex:1, backgroundColor:'#302c30',height: Dimensions.get('window').height}} 
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} style ={{flex:1, backgroundColor:'#f7bd36',height: Dimensions.get('window').height}} 
         showsHorizontalScrollIndicator={true}
         automaticallyAdjustContentInsets={false}
         vertical={true}
         >
+            {parameter ? <View style={{backgroundColor:'black', width:350, borderBottomEndRadius:30, padding:8}}>
+                <TouchableHighlight style={{alignItems:'flex-end'}} onPress={()=>configure()}>
+                    <Ionicons
+                    testID="nextButton"
+                    name="md-close-sharp"
+                    color='white'
+                    size={24}
+                    />
+                </TouchableHighlight>
+                <View style={{flexDirection:'row'}}>
+                <Text style={{fontSize:25,fontWeight:'bold',paddingLeft:10, color:'white'}}>Aa</Text>
+                <SliderA
+                    style={{width: 250, height: 40}}
+                    minimumValue={16}
+                    maximumValue={25}
+                    value={17}
+                    minimumTrackTintColor="#943610"
+                    maximumTrackTintColor="white"
+                    thumbTintColor='#943610'
+                    onValueChange={(low) => {
+                        console.log(`font size is ${low}`);
+                        setFontSize(low)
+                    }}
+        
+            />
+            </View>
+            <View style={{flexDirection:'row'}}>
+                <Text style={{fontSize:25,fontWeight:'bold',paddingLeft:10, color:'white'}}>↨☰</Text>
+                <SliderA
+                    style={{width: 250, height: 40}}
+                    minimumValue={22}
+                    maximumValue={35}
+                    value={25}
+                    minimumTrackTintColor="#943610"
+                    maximumTrackTintColor="white"
+                    thumbTintColor='#943610'
+                    onValueChange={(value) => {
+                        console.log(`The low value is ${value}`);
+                    setInterligne(value)
+                        }}
+        
+                />  
+             </View>
+             <View style={{flexDirection:'row'}}>
+                <Text style={{fontSize:25,fontWeight:'bold',paddingLeft:10, color:'white'}}>⬛</Text>
+                <SliderA
+                    style={{width: 250, height: 40}}
+                    minimumValue={0.8}
+                    maximumValue={1}
+                    value={0.9}
+                    minimumTrackTintColor="#943610"
+                    maximumTrackTintColor="white"
+                    thumbTintColor='#943610'
+                    onValueChange={(value) => {
+                        console.log(`Opacity is ${value}`);
+                    setOpacity(value)
+                        }}
+        
+                />  
+             </View>
+            </View> : <View></View>}
             <ImageBackground
              source={photolink}
-             style={{resizeMode: 'cover',}}
+             style={{resizeMode: 'cover'}}
              
              >
-                 <View style={styles.containerTitle}>
-                    <Text style={{ ...FONTS.h2,color: COLORS.white,padding:8}}>{title}</Text>
-                    <Text style={{color: COLORS.white}}> ────────<Ionicons style={styles.icon} testID="nextButton" name="heart" color="black" size={20}
-                    />  ─────────</Text>
+                 <TouchableHighlight
+                 onPress={()=>configure()} activeOpacity={0.8}
+                 underlayColor='#f7bd36'>
+                 <View
+                   style={styles.menuBtn}>
+                      <View  style={styles.menuBtnImgIcon}>
+                        <View style={[styles.containerTitle]}>
+                            <View style={styles.icon3dot}>
+                                <Ionicons
+                                testID="nextButton"
+                                name="md-ellipsis-vertical-sharp"
+                                color='white'
+                                size={30}
+                                />
+                            </View>
+                            <Text style={{ ...FONTS.h2,color: COLORS.white,padding:8}}>{title}</Text>
+                            <Text style={{color: COLORS.white}}> ────────<Ionicons style={styles.icon} testID="nextButton" name="heart" color="black" size={20}
+                            />  ─────────</Text>
                 </View>
+                      
+                    </View>
+                      
+                 </View>
+               </TouchableHighlight>
+                 
+                 
                  
                 
                 <View style={styles.containerSong} >
-                    <View style={styles.containerLyrix} >
+                    <View style={[styles.containerLyrix, {  opacity:opacity}]} >
                     {arrayOrder.map((value, index) => (
-                        <Text  key={index} style={styles.lyrix} >
+                        <Text  key={index} style={[styles.lyrix, {fontSize:fontSize,  lineHeight: interligne}]} >
                             {value.includes("[Ref]") ? <Text style={{color:'#ffe282'}}>{value}</Text> : value}
                         </Text>
                     ))}
                     <Text style={{color: COLORS.white}}> </Text>
                     </View>
                 </View>
-            
+                
                 </ImageBackground>
-                <Text style={{padding:40, fontSize:11,color:'white'}}>© Copyright to Yaldot-Miezaka hanatsara hatrany-Elohim anie hitahy antsika rehetra </Text>
+                <Text style={{padding:23, fontSize:11,color:'black'}}>© Copyright by Yaldot - Elohim anie hitahy antsika Rakdelet rehetra </Text>
         </ScrollView>
     )
 }
@@ -172,6 +262,19 @@ const styles = StyleSheet.create({
         paddingTop:22,
         color:COLORS.white,
     },
+    icon3dot: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign:'center',
+        paddingTop:6,
+        color:COLORS.white,
+        backgroundColor:'#943610',
+        width:30,
+        borderRadius:5
+
+    },
     inputContainer:{
         opacity:0.7,
         alignItems:'center',
@@ -181,12 +284,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     lyrix:{
-        fontSize:16,
          color: COLORS.white,
-         padding:10,
+         padding:12,
          fontWeight:'900',
          fontFamily:'Comic sans MS',
-         textTransform:'uppercase'
+         textAlign:'center',
+         textTransform:'uppercase',
+         width:320,
+         left:'3%',
+        
+         
     },
     containerLyrix:{
         backgroundColor: COLORS.black,
@@ -197,6 +304,7 @@ const styles = StyleSheet.create({
         borderTopStartRadius:10,
         borderBottomLeftRadius:10,
         borderTopRightRadius:30,
+      
        
     },
     nav: {
@@ -205,7 +313,19 @@ const styles = StyleSheet.create({
         flex: 1,
         borderBottomWidth: 1,
         borderColor: '#000000'
-      }
+      },
+      menuBtn:{
+        
+        borderRadius:30,
+        marginRight:7,
+       
+        justifyContent:'center',
+        alignItems:'center',
+        paddingHorizontal:5,
+        flexDirection:'row',
+        elevation:10
+      },
+     
    
 })
 export default Song;

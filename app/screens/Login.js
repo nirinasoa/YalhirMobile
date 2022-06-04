@@ -171,10 +171,13 @@ const Login = ({ navigation }) =>{
                 </View> 
                 <View style={{padding:10}}>
                     <TextInput
-                    label="Password"
+                    label="Code"
                     style={styles.input}
-                    placeholder="password"
+                    placeholder="code..."
+                    
+                    keyboardAppearance="dark"
                     secureTextEntry={true}
+                    keyboardType="phone-pad"
                     defaultValue={password}
                     onChangeText={password => setPassword(password)}
                     />
@@ -215,7 +218,7 @@ const styles = StyleSheet.create({
     input: {
         // width:300,
         width:Dimensions.get('window').width/1.3,
-        left:35,
+        left:30,
         backgroundColor:'transparent',
         borderStartWidth : 2,
         borderEndWidth : 3,
@@ -225,6 +228,7 @@ const styles = StyleSheet.create({
         borderBottomWidth : 2,
         borderColor:'#6b4803',
         paddingLeft:100,
+        fontSize:20
         
     },
     bottomView:{

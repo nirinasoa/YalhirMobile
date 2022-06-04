@@ -121,7 +121,7 @@ const Info = ({ route, navigation }) =>{
             <Avatar 
             rounded 
             key={index}
-            size={70}
+            size={60}
             source={item.img}/>
             )
         })
@@ -132,7 +132,7 @@ const Info = ({ route, navigation }) =>{
             <Avatar 
             rounded 
             key={index}
-            size={70}
+            size={60}
             source={item.img}/>
             )
         })

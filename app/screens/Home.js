@@ -19,6 +19,7 @@ import { images, theme } from "../constants/";
 import {openDatabase} from 'react-native-sqlite-storage';
 
 
+
 //theme
 const {COLORS, FONTS, SIZES} = theme;
 const {width} = Dimensions.get("screen")
@@ -94,6 +95,9 @@ const Home = ({ navigation }) =>{
           AsyncStorage.removeItem('@isAdmin')
           navigation.navigate('Login')
         }
+        function searchSong(){
+          navigation.navigate('Recherche')
+        }
         useEffect(() => {
           Animated.timing(opacity, {
             toValue:1,
@@ -150,7 +154,7 @@ const Home = ({ navigation }) =>{
              >
                   <View style={styles.inputContainer}>
                   <TextInput
-                    label="Hitady"
+                    label="Hitady mpamoron-kira"
                     style={styles.input}
                     placeholder="Hitady mpihira 734"
                     defaultValue={search}
@@ -208,22 +212,24 @@ const Home = ({ navigation }) =>{
                  </View>
                </TouchableHighlight>
                </View> 
+              
                <View>
                <TouchableHighlight
-                 onPress={()=>logout()} activeOpacity={0.8}
+                 onPress={()=>searchSong()} activeOpacity={0.8}
                  underlayColor='#f7bd36'>
                  <View
                    style={styles.menuBtn}>
                       <View  style={styles.menuBtnImgIcon}>
                       <Ionicons
                     testID="nextButton"
-                    name="md-log-out"
+                    name="search"
                     color='black'
                     size={24}
                     />
                     </View>
-                   <Text style={styles.btnText}>Hiala</Text>
+                   <Text style={styles.btnText}>Hitady</Text>
                  </View>
+                 
                </TouchableHighlight>
                </View> 
                </View>
@@ -356,7 +362,7 @@ const styles = StyleSheet.create({
       width:120,
       borderRadius:30,
       marginRight:7,
-      backgroundColor:'#ffc75e',
+      backgroundColor:'#fcd281',
       justifyContent:'center',
       alignItems:'center',
       paddingHorizontal:5,
@@ -366,7 +372,7 @@ const styles = StyleSheet.create({
     menuBtnImgIcon:{
       height:25,
       width:25,
-      backgroundColor:'#ffc75e',
+      backgroundColor:'#fcd281',
       borderRadius:20,
       justifyContent:'center',
       alignItems:'center',
